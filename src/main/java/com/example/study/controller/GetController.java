@@ -22,11 +22,15 @@ public class GetController {
 
     // /api/getMultiParameter?account=mkkim&email=mkkim@email.com&page=10
     @GetMapping("/getMultiParameter")
-    public String getMultiParameter(SearchParam searchParam) {
+    public SearchParam getMultiParameter(SearchParam searchParam) {
         System.out.println(searchParam.getAccount());
         System.out.println(searchParam.getEmail());
         System.out.println(searchParam.getPage());
-        return "9ood";
+
+        // { "account": "", "email": "", "page": 0 }
+        return searchParam;
+        // 스프링 부트에서는 잭슨라이브러리를 기본적으로 내장
+        // 따로 설정하지 않는다면 객체를 리턴할 땐 자동적으로 제이슨으로 변환되어 리턴된다.
     }
 
 }
