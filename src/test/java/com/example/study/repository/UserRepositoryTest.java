@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 // 스프링부트 or 그레이들 버젼 때문인지 예제 진행이 테스트코드 진행이 안 되어서 @ExtendWith(MokitoExtension.class)
 // 기존 -> extends StudyApplicationTests
@@ -32,11 +33,19 @@ public class UserRepositoryTest {
         user.setCreatedBy("mkkim");
 
         userRepository.save(user);
+        System.out.println("all : " + userRepository.findAll());
         System.out.println("user : " + user);
+        // 세이브로 유저가 생성이 되었는데
+        // 왜 파인드올로 찾지 못하는걸까
+        // mock과 관련되어 있는걸까
     }
 
+    @Test
     public void read(){
-
+        Optional<User> user = userRepository.findById(2L);
+        user.ifPresent(user1 -> {
+            System.out.println(user1);
+        });
     }
 
     public void update(){
