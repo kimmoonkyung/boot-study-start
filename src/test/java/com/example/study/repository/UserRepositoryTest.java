@@ -1,10 +1,12 @@
 package com.example.study.repository;
 
+import com.example.study.model.entity.Item;
 import com.example.study.model.entity.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
@@ -32,19 +34,23 @@ public class UserRepositoryTest {
         user.setCreatedAt(LocalDateTime.now());
         user.setCreatedBy("mkkim");
 
-        userRepository.save(user);
+        User newUser = userRepository.save(user);
         System.out.println("all : " + userRepository.findAll());
-        System.out.println("user : " + user);
-        // 세이브로 유저가 생성이 되었는데
+        System.out.println("user : " + newUser);
+        // 세이브로 유저가 생성이 되었는데 --> 아니다 나는 user를 조회한거지 save로 생성된 user를 조회한게 아니다.
         // 왜 파인드올로 찾지 못하는걸까
         // mock과 관련되어 있는걸까
     }
 
     @Test
+    @Transactional
     public void read(){
-        Optional<User> user = userRepository.findById(2L);
-        user.ifPresent(user1 -> {
-            System.out.println(user1);
+        Optional<User> user = userRepository.findById(1L);
+        user.ifPresent(selectUser -> {
+            selectUser.getOrderDetailList().forEach(detail -> {
+                Item item = detail.getItem();
+                System.out.println("#### : " + item);
+            });
         });
     }
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -39,5 +40,10 @@ public class User {
 
     @Column
     private String updatedBy;
+
+    // 일 대 다 1 : N
+    // LAZY = 지연로딩 , EAGER = 즉시로딩
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<OrderDetail> orderDetailList;
 
 }
