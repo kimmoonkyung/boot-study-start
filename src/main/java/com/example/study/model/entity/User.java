@@ -20,14 +20,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "account") // 테이블의 컬럼명과 동일하다면 선언하지 않아도 자동 매칭됨
+    @Column // 테이블의 컬럼명과 동일하다면 선언하지 않아도 자동 매칭됨
     private String account;
 
-    @Column(name = "email")
+    private String password;
+    private String status;
+
+    @Column
     private String email;
 
     @Column
     private String phoneNumber;
+
+    private LocalDateTime registeredAt;
+    private LocalDateTime unregisteredAt;
 
     @Column
     private LocalDateTime createdAt;
@@ -36,14 +42,9 @@ public class User {
     private String createdBy;
 
     @Column
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     @Column
     private String updatedBy;
-
-    // 일 대 다 1 : N
-    // LAZY = 지연로딩 , EAGER = 즉시로딩
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<OrderDetail> orderDetailList;
 
 }
