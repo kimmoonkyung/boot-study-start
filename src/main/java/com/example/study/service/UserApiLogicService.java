@@ -6,12 +6,14 @@ import com.example.study.model.network.Header;
 import com.example.study.model.network.request.UserApiRequest;
 import com.example.study.model.network.response.UserApiResponse;
 import com.example.study.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserApiLogicService implements CrudInterface<UserApiRequest, UserApiResponse> {
 
@@ -45,11 +47,11 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
 
     @Override
     public Header<UserApiResponse> read(Long id) {
-
+        log.info("## USER API SERVICE ID {}", id);
         // id -> repository getOne, getById
         // user -> userApiResponse return
         return userRepository.findById(id)
-                .map(this::response) // this::response === user -> response(user) 인텔리제이 추천
+                .map(user -> response(user)) // this::response === user -> response(user) 인텔리제이 추천
                 .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
