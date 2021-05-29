@@ -1,16 +1,18 @@
 package com.example.study.interpace;
 
 import com.example.study.model.network.Header;
+import com.example.study.model.network.request.UserApiRequest;
+import com.example.study.model.network.response.UserApiResponse;
 
-public interface CrudInterface {
+public interface CrudInterface<Req, Res> {
 
     // todo request object 추가
-    Header create();
+    Header<Res> create(Header<Req> req);
 
-    Header read(Long id);
+    Header<Res> read(Long id);
 
-    Header update();
+    Header<Res> update(Header<Req> req);
 
-    Header delete(Long id);
+    Header<Res> delete(Long id);
 
 }

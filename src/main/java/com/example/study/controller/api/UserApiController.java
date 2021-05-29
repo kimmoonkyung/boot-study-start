@@ -2,40 +2,46 @@ package com.example.study.controller.api;
 
 import com.example.study.interpace.CrudInterface;
 import com.example.study.model.network.Header;
-import com.example.study.repository.UserRepository;
+import com.example.study.model.network.request.UserApiRequest;
+import com.example.study.model.network.response.UserApiResponse;
+import com.example.study.service.UserApiLogicService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/user")
-public class UserApiController implements CrudInterface {
+public class UserApiController implements CrudInterface<UserApiRequest, UserApiResponse> {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserApiLogicService userApiLogicService;
 
     @Override
-    @PostMapping("") // /api/user 로 매핑
-    public Header create() {
-        return null;
+    @PostMapping("") // api/user 로 매핑 됨
+    public Header<UserApiResponse> create(@RequestBody Header<UserApiRequest> request) {
+        log.info("create : {}", request);
+        return userApiLogicService.create(request);
     }
 
     @Override
-    @GetMapping("{ids}") // /api/user/{ids} 로 매핑 -> @PathVariable 사용차 ids로
-    public Header read(@PathVariable(name = "ids") Long id) {
-        return null;
+    @GetMapping("{id}") // /api/user/{id}
+    public Header<UserApiResponse> read(@PathVariable Long id) {
+        log.info("read id : {}", id);
+        return userApiLogicService.read(id);
     }
 
     @Override
     @PutMapping("") // /api/user
-    public Header update() {
-        return null;
+    public Header<UserApiResponse> update(@RequestBody Header<UserApiRequest> request) {
+        log.info("update : {}", request);
+        return userApiLogicService.update(request);
     }
 
     @Override
-    @DeleteMapping("{id}") // api/user/{id}
-    public Header delete(Long id) {
-        return null;
+    @DeleteMapping("{id}") // /api/user/{id}
+    public Header<UserApiResponse> delete(@PathVariable Long id) {
+        log.info("delete id : {}", id);
+        return userApiLogicService.delete(id);
     }
-
-
 }
