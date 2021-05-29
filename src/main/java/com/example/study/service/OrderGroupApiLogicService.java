@@ -35,6 +35,7 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
                 .totalPrice(body.getTotalPrice())
                 .totalQuantity(body.getTotalQuantity())
                 .orderAt(LocalDateTime.now())
+                //.arrivalDate(body.getArrivalDate())
                 .user(userRepository.getOne(body.getUserId()))
                 .build();
 
@@ -59,6 +60,8 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
                 .map(orderGroup -> {
                         orderGroup
                                 .setRevAddress(body.getRevAddress())
+                                .setOrderType(body.getOrderType())
+                                .setPaymentType(body.getPaymentType())
                                 ;
                         return orderGroup;
                 })
