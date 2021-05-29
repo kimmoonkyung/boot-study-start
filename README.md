@@ -194,3 +194,22 @@ COLLATE = utf8mb4_bin;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+---------------------------------------------------------------------------------------------------------
+item create json data
+
+{
+    "transaction_time": "2021-05-29T22:17:18.646814",
+    "result_code": "OK",
+    "description": "OK",
+    "data": {
+        "status": "REGISTERED",
+        "name": "갤럭시 서페이스",
+        "title": "갤럭시",
+        "content": "2021년 여름 한정 세일",
+        "price": 998000 ,
+        "brand_name": "삼성소프트",
+        "partner_id": 1
+    }
+}
+---------------------------------------------------------------------------------------------------------
