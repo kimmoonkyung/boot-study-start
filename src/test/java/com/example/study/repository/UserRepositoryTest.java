@@ -18,8 +18,8 @@ public class UserRepositoryTest extends StudyApplicationTests {
 
     // DI (Dependency Injection)
     // 스프링부트 버젼 때문인지 강의(19년도 강의임)로는 테스트 코드
-    // 예제 진행이 안되어서 @Autowired를 @Mock로 변경/
-    // @Mock 를 사용해서 실제 디비에 값이 반영 되진 않는다.
+    // 예제 진행이 안되어서 @Autowired를 @Mock로 변경/ -> 등신같이 오타때문에 진행 안 되던 것이었음.
+    // @Mock 를 사용해서 실제 디비에 값이 반영 되진 않는다
 //    @Mock
 //    private UserRepository userRepository;
 
@@ -38,15 +38,23 @@ public class UserRepositoryTest extends StudyApplicationTests {
         LocalDateTime createdAt = LocalDateTime.now();
         String createdBy = "AdminServer";
 
-        User user = new User();
-        user.setAccount(account);
-        user.setPassword(password);
-        user.setStatus(status);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        user.setRegisteredAt(registeredAt);
+//        User user = new User();
+//        user.setAccount(account);
+//        user.setPassword(password);
+//        user.setStatus(status);
+//        user.setEmail(email);
+//        user.setPhoneNumber(phoneNumber);
+//        user.setRegisteredAt(registeredAt);
 //        user.setCreatedAt(createdAt);
 //        user.setCreatedBy(createdBy);
+
+        // builder 로 변경
+        User user = User.builder()
+                .account(account)
+                .password(password)
+                .status(status)
+                .email(email)
+                .build();
 
         User newUser = userRepository.save(user);
         Assertions.assertNotNull(newUser);
