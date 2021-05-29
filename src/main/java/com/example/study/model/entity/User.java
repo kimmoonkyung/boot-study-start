@@ -4,6 +4,12 @@ package com.example.study.model.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString(exclude = "orderGroupList")
+@EntityListeners(AuditingEntityListener.class)
 // @Table(name = "User") -> 테이블명과 동일하다면 선언하지 않아도 됨.
 public class User {
 
@@ -35,16 +43,22 @@ public class User {
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
 
-    @Column
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    @Column
+    @CreatedBy
     private String createdBy;
 
-    @Column
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Column
+    @LastModifiedBy
     private String updatedBy;
+
+    // User 1 : N OrderGroup
+    // 1대N 관계는 페치타입을 걸어줘야 한다.
+    // 1대N 이기 때문에 리스트 타입으로 받아와야한다.
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<OrderGroup> orderGroupList;
 
 }

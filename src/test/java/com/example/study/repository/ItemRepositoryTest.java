@@ -28,9 +28,9 @@ public class ItemRepositoryTest extends StudyApplicationTests {
         item.setContent("2021년 형");
         item.setBrandName("삼성");
         item.setRegisteredAt(LocalDateTime.now());
-        item.setCreatedAt(LocalDateTime.now());
-        item.setCreatedBy("Partner01");
-        item.setPartnerId(1L);
+//        item.setCreatedAt(LocalDateTime.now());
+//        item.setCreatedBy("Partner01");
+//        item.setPartner();
 
         Item newItem = itemRepository.save(item);
         System.out.println(newItem);
