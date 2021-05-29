@@ -2,6 +2,7 @@ package com.example.study.controller.api;
 
 import com.example.study.controller.CrudController;
 import com.example.study.interpace.CrudInterface;
+import com.example.study.model.entity.Item;
 import com.example.study.model.network.Header;
 import com.example.study.model.network.request.ItemApiRequest;
 import com.example.study.model.network.response.ItemApiResponse;
@@ -17,15 +18,15 @@ import javax.annotation.PostConstruct;
 @RestController
 @RequestMapping("/api/item")
 @AllArgsConstructor
-public class ItemApiController extends CrudController<ItemApiRequest, ItemApiResponse> {
+public class ItemApiController extends CrudController<ItemApiRequest, ItemApiResponse, Item> {
 
-    private final ItemApiLogicService itemApiLogicService;
-
-    // 추상화
-    @PostConstruct
-    public void init(){
-        this.baseService = itemApiLogicService;
-    }
+//    private final ItemApiLogicService itemApiLogicService;
+//
+//    // 추상화
+//    @PostConstruct
+//    public void init(){
+//        this.baseService = itemApiLogicService;
+//    }
 
 //    @Override
 //    @PostMapping("") // /api/item

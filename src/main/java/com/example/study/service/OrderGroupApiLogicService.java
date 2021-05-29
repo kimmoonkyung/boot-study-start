@@ -16,9 +16,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiRequest, OrderGroupApiResponse> {
-
-    private final OrderGroupRepository orderGroupRepository;
+public class OrderGroupApiLogicService extends BaseService<OrderGroupApiRequest, OrderGroupApiResponse, OrderGroup> {
 
     private final UserRepository userRepository;
 
@@ -39,7 +37,7 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
                 .user(userRepository.getOne(body.getUserId()))
                 .build();
 
-        OrderGroup newOrderGroup = orderGroupRepository.save(orderGroup);
+        OrderGroup newOrderGroup = baseRepository.save(orderGroup);
 
         return response(newOrderGroup);
     }
@@ -47,7 +45,7 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
     @Override
     public Header<OrderGroupApiResponse> read(Long id) {
 
-        return orderGroupRepository.findById(id)
+        return baseRepository.findById(id)
                 .map(this::response)
                 .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
@@ -56,7 +54,7 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
     public Header<OrderGroupApiResponse> update(Header<OrderGroupApiRequest> request) {
 
         OrderGroupApiRequest body = request.getData();
-        return orderGroupRepository.findById(body.getId())
+        return baseRepository.findById(body.getId())
                 .map(orderGroup -> {
                         orderGroup
                                 .setRevAddress(body.getRevAddress())
@@ -66,16 +64,16 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
                         return orderGroup;
                 })
                 //.map(newOrderGroup -> orderGroupRepository.save(newOrderGroup)) 대체 가능
-                .map(orderGroupRepository::save)
+                .map(baseRepository::save)
                 .map(this::response)
                 .orElseGet(() -> Header.ERROR("없데이트!"));
     }
 
     @Override
     public Header delete(Long id) {
-        return orderGroupRepository.findById(id)
+        return baseRepository.findById(id)
                 .map(orderGroup -> {
-                    orderGroupRepository.delete(orderGroup);
+                    baseRepository.delete(orderGroup);
                     return Header.OK();
                 })
                 .orElseGet(() -> Header.ERROR("삭제 할 데이터가 없음"));

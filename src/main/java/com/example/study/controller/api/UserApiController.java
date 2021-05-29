@@ -2,10 +2,12 @@ package com.example.study.controller.api;
 
 import com.example.study.controller.CrudController;
 import com.example.study.interpace.CrudInterface;
+import com.example.study.model.entity.User;
 import com.example.study.model.network.Header;
 import com.example.study.model.network.request.UserApiRequest;
 import com.example.study.model.network.response.UserApiResponse;
 import com.example.study.service.UserApiLogicService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,16 +17,16 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
-public class UserApiController extends CrudController<UserApiRequest, UserApiResponse> {
+@AllArgsConstructor
+public class UserApiController extends CrudController<UserApiRequest, UserApiResponse, User> {
 
-    @Autowired
-    private UserApiLogicService userApiLogicService;
-
-    // 추상화
-    @PostConstruct
-    public void init() {
-        this.baseService = userApiLogicService;
-    }
+//    private final UserApiLogicService userApiLogicService;
+//
+//    // 추상화
+//    @PostConstruct
+//    public void init() {
+//        this.baseService = userApiLogicService;
+//    }
 
 //    @Override
 //    @PostMapping("") // api/user 로 매핑 됨

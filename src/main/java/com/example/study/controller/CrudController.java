@@ -2,12 +2,17 @@ package com.example.study.controller;
 
 import com.example.study.interpace.CrudInterface;
 import com.example.study.model.network.Header;
+import com.example.study.service.BaseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-public abstract class CrudController<Req, Res> implements CrudInterface<Req, Res> {
+@Component
+public abstract class CrudController<Req, Res, Entity> implements CrudInterface<Req, Res> {
 
     // 상속받는 클래스에서만 접근 할 수 있는 protected
-    protected CrudInterface<Req, Res> baseService;
+    @Autowired(required = false)
+    protected BaseService<Req, Res, Entity> baseService;
 
     @Override
     @PostMapping("")

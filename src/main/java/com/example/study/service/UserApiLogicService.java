@@ -1,5 +1,6 @@
 package com.example.study.service;
 
+import com.example.study.controller.CrudController;
 import com.example.study.interpace.CrudInterface;
 import com.example.study.model.entity.User;
 import com.example.study.model.enumclass.UserStatus;
@@ -16,10 +17,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class UserApiLogicService implements CrudInterface<UserApiRequest, UserApiResponse> {
-
-    @Autowired
-    private UserRepository userRepository;
+public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResponse, User> {
 
     // todo 1. request data 가져옴
     // todo 2. user 생성
@@ -40,7 +38,7 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
                 .phoneNumber(userApiRequest.getPhoneNumber())
                 .registeredAt(LocalDateTime.now())
                 .build();
-        User newUser = userRepository.save(user);
+        User newUser = baseRepository.save(user);
 
         // todo 3-1. 생성 된 데이터 기준 -> UserApiResponse Return
         return response(newUser);
@@ -51,7 +49,7 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
         log.info("## USER API SERVICE ID {}", id);
         // id -> repository getOne, getById
         // user -> userApiResponse return
-        return userRepository.findById(id)
+        return baseRepository.findById(id)
                 .map(user -> response(user)) // this::response === user -> response(user) 인텔리제이 추천
                 .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
@@ -63,7 +61,7 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
         UserApiRequest userApiRequest = request.getData();
 
         // todo 2. id -> user find
-        Optional<User> optional = userRepository.findById(userApiRequest.getId());
+        Optional<User> optional = baseRepository.findById(userApiRequest.getId());
 
         return optional.map(user -> {
             // todo 3. data -> update
@@ -76,7 +74,7 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
                     .setUnregisteredAt(userApiRequest.getUnregisteredAt());
             return user;
         }) // todo 4. userApiResponse
-        .map(user -> userRepository.save(user))     // update -> newUser
+        .map(user -> baseRepository.save(user))     // update -> newUser
         .map(updateUser -> response(updateUser))    // userApiResponse
         .orElseGet(() -> Header.ERROR("데이터 없음"));
 
@@ -86,11 +84,11 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
     public Header delete(Long id) {
 
         // todo 1. id -> repository -> user
-        Optional<User> optional = userRepository.findById(id);
+        Optional<User> optional = baseRepository.findById(id);
 
         // todo 2. repository -> delete
         return optional.map(user -> {
-            userRepository.delete(user);
+            baseRepository.delete(user);
             return Header.OK();
         })
         .orElseGet(() -> Header.ERROR("데이터 없음"));
