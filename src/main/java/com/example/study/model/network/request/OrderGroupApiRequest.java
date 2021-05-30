@@ -21,7 +21,7 @@ public class OrderGroupApiRequest {
     private OrderType orderType;
     private String revAddress;
     private String revName;
-    private PaymentType paymentType;
+    private String paymentType;
     private BigDecimal totalPrice;
     private Integer totalQuantity;
     private LocalDateTime orderAt;

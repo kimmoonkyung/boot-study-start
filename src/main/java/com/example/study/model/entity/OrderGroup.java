@@ -37,8 +37,8 @@ public class OrderGroup {
     private String revAddress;
     private String revName;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentType paymentType; // 카드 / 현금
+    // @Enumerated(EnumType.STRING)
+    private String paymentType; // 카드 / 현금
 
     private BigDecimal totalPrice;
     private Integer totalQuantity;

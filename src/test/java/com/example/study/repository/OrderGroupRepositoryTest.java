@@ -22,7 +22,7 @@ class OrderGroupRepositoryTest extends StudyApplicationTests {
 
         OrderGroup orderGroup = new OrderGroup();
         orderGroup.setStatus("COMPLETE");
-        orderGroup.setOrderType("ALL");
+//        orderGroup.setOrderType("ALL");
         orderGroup.setRevAddress("서울시 서초구");
         orderGroup.setRevName("노충내");
         orderGroup.setPaymentType("CARD");
