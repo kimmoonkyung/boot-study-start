@@ -85,7 +85,7 @@ public class ItemApiLogicService extends BaseService<ItemApiRequest, ItemApiResp
                 .orElseGet(() -> Header.ERROR("삭제 할 데이터 없음!"));
     }
 
-    private Header<ItemApiResponse> response(Item item){
+    public Header<ItemApiResponse> response(Item item){
 
         //String statusTitle = item.getStatus().getTitle();
 

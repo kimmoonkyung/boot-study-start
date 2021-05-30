@@ -2,22 +2,39 @@ package com.example.study.service;
 
 import com.example.study.controller.CrudController;
 import com.example.study.interpace.CrudInterface;
+import com.example.study.model.entity.Item;
+import com.example.study.model.entity.OrderGroup;
 import com.example.study.model.entity.User;
 import com.example.study.model.enumclass.UserStatus;
 import com.example.study.model.network.Header;
+import com.example.study.model.network.Pagination;
 import com.example.study.model.network.request.UserApiRequest;
+import com.example.study.model.network.response.ItemApiResponse;
+import com.example.study.model.network.response.OrderGroupApiResponse;
 import com.example.study.model.network.response.UserApiResponse;
+import com.example.study.model.network.response.UserOrderInfoApiResponse;
 import com.example.study.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResponse, User> {
+
+    private final UserRepository userRepository;
+    private final OrderGroupApiLogicService orderGroupApiLogicService;
+    private final ItemApiLogicService itemApiLogicService;
 
     // todo 1. request data 가져옴
     // todo 2. user 생성
@@ -41,7 +58,7 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
         User newUser = baseRepository.save(user);
 
         // todo 3-1. 생성 된 데이터 기준 -> UserApiResponse Return
-        return response(newUser);
+        return Header.OK(response(newUser));
     }
 
     @Override
@@ -51,6 +68,8 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
         // user -> userApiResponse return
         return baseRepository.findById(id)
                 .map(user -> response(user)) // this::response === user -> response(user) 인텔리제이 추천
+                //.map(userApiResponse -> Header.OK(userApiResponse))
+                .map(Header::OK) // 위를 아래로 람다 사용 가능
                 .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
@@ -75,7 +94,9 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
             return user;
         }) // todo 4. userApiResponse
         .map(user -> baseRepository.save(user))     // update -> newUser
-        .map(updateUser -> response(updateUser))    // userApiResponse
+//        .map(updateUser -> response(updateUser))    // userApiResponse
+        .map(user -> response(user))
+        .map(Header::OK)
         .orElseGet(() -> Header.ERROR("데이터 없음"));
 
     }
@@ -96,7 +117,7 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
     }
 
 
-    private Header<UserApiResponse> response(User user){
+    private UserApiResponse response(User user){
         // user return -> userApiResponse
 
         UserApiResponse userApiResponse = UserApiResponse.builder()
@@ -111,7 +132,64 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
                 .build();
 
         // Header + data return
-        return Header.OK(userApiResponse);
+        return userApiResponse;
     }
+
+    public Header<List<UserApiResponse>> search(Pageable pageable) {
+
+        Page<User> users = userRepository.findAll(pageable);
+
+        List<UserApiResponse> userApiResponseList = users.stream()
+                .map(user -> response(user)) // this::response 가능
+                .collect(Collectors.toList());
+
+        // List<UserApiResponse>
+        // -> Header<List<UserApiResponse>>
+
+        Pagination pagination = Pagination.builder()
+                .totalPages(users.getTotalPages())
+                .totalElements(users.getTotalElements())
+                .currentPage(users.getNumber())
+                .currentElements(users.getNumberOfElements())
+                .build();
+
+        return Header.OK(userApiResponseList, pagination);
+
+    }
+
+    // 존나 어려웡 ㅠ 근데 이렇게 주면 프론트 입장에서는 정말 편하겠다.
+    // todo! 분석 조져 ( 프론트에 response 해주는 프로세스를 제대로 이해 하고 있다면 그렇게 어려운 코드는 아닌것으로 보인다 )
+    public Header<UserOrderInfoApiResponse> orderInfo(Long id) {
+
+        // user
+        User user = userRepository.getOne(id);
+        UserApiResponse userApiResponse = response(user);
+
+        // orderGroup
+        List<OrderGroup> orderGroupList = user.getOrderGroupList();
+        List<OrderGroupApiResponse> orderGroupApiResponseList =
+            orderGroupList.stream()
+                    .map(orderGroup -> {
+                       OrderGroupApiResponse orderGroupApiResponse = orderGroupApiLogicService.response(orderGroup).getData();
+                       // item api response
+                       List<ItemApiResponse> itemApiResponseList = orderGroup.getOrderDetailList().stream()
+                               .map(detail -> detail.getItem())
+                               .map(item -> itemApiLogicService.response(item).getData())
+                               .collect(Collectors.toList());
+                       orderGroupApiResponse.setItemApiResponseList(itemApiResponseList);
+                       return orderGroupApiResponse;
+                    })
+                    .collect(Collectors.toList());
+
+        userApiResponse.setOrderGroupApiResponseList(orderGroupApiResponseList);
+
+        UserOrderInfoApiResponse userOrderInfoApiResponse = UserOrderInfoApiResponse.builder()
+                .userApiResponse(userApiResponse)
+                .build();
+
+        return Header.OK(userOrderInfoApiResponse);
+
+    }
+
 
 }

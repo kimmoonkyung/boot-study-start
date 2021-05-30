@@ -9,9 +9,11 @@ import com.example.study.model.network.response.OrderGroupApiResponse;
 import com.example.study.repository.OrderGroupRepository;
 import com.example.study.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -79,8 +81,7 @@ public class OrderGroupApiLogicService extends BaseService<OrderGroupApiRequest,
                 .orElseGet(() -> Header.ERROR("삭제 할 데이터가 없음"));
     }
 
-
-    private Header<OrderGroupApiResponse> response(OrderGroup orderGroup) {
+    public Header<OrderGroupApiResponse> response(OrderGroup orderGroup) {
         OrderGroupApiResponse orderGroupApiResponse = OrderGroupApiResponse.builder()
                 .id(orderGroup.getId())
                 .status(orderGroup.getStatus())
